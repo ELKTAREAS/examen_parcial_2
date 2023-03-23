@@ -23,6 +23,7 @@ server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # server_socket.bind((socket.gethostname(), 4444))
 server_socket.bind((HOST, PORT))
 server_socket.listen(10)  # Hasta 10 clientes
+print(f"Servidor en linea en {HOST}:{PORT}...")
 
 
 # Función que procesa las solicitudes de los clientes
@@ -31,17 +32,20 @@ def handle_client(client_socket, client_address):
 
     # Recibir la solicitud del cliente
     data = client_socket.recv(1024).decode()
+    """cod_pais = data[:3]
+    cod_zona = data[3:6]
+    cod_distrito = data[6:9]"""
     id_num = str(data[9:])
 
     # Dividir el ID en 4 secciones
     # Usaremos una lista de 4 elementos que contenga los 3 primeros caracteres del ID y el resto de caracteres del ID en el último elemento
     # Por ejemplo, si el ID es 12345678900000001, la lista será ["001", "001", "001", "00000001"] y
     # cada elemento será un argumento para la consulta SQL que se ejecutará más adelante en el código
-    id = [data[i:i + 3] for i in range(0, 9, 3)] + [data[9:]]
+    id = [data[i:i + 3] for i in range(0, 9, 3)]
 
     # Consultar la base de datos MySQL para obtener la información del ID recibido del cliente
     cursor.execute(
-        f"SELECT pais, zona, distrito FROM distrito D join pais on pais.codpais = {id[0]} join zona on zona.codzona = 2 AND zona.codpais = {id[0]} WHERE D.codpais = {id[0]} AND D.codzona = {id[1]} AND cod_distrito = {id[2]}")
+        f"SELECT pais, zona, distrito FROM distrito D JOIN pais ON pais.codpais = {id[0]} JOIN zona ON zona.codzona = {id[1]} AND zona.codpais = {id[0]} WHERE D.codpais = {id[0]} AND D.codzona = {id[1]} AND D.cod_distrito = {id[2]}")
     result = cursor.fetchone()
 
     if result:
@@ -75,7 +79,5 @@ while True:
     client_socket, client_address = server_socket.accept()
     client_thread = threading.Thread(target=handle_client, args=(client_socket, client_address))
     client_thread.start()
-
-
 
 # Path: client_exam.py

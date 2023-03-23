@@ -1,17 +1,25 @@
 import tkinter as tk
+from tkinter import ttk
+from ttkthemes import ThemedStyle
+
 import socket
+
 
 # Crear la ventana
 window = tk.Tk()
 window.title("Consulta de información")
 window.geometry("500x300")
 
-txt_label = tk.Label(window, text="Necesito tu ID para poder consultar tu información")
-txt_label2 = tk.Label(window, text="Ejemplo con 17 caracteres: 00100100100000001")
-id_label = tk.Label(window, text="ID:")
-id_entry = tk.Entry(window)
-info_label = tk.Label(window, text="")
+# Crear el estilo
+style = ThemedStyle(window)
+style.set_theme("arc")
 
+# Colocar los widgets en la ventana
+txt_label = ttk.Label(window, text="Necesito tu ID para poder consultar tu información")
+txt_label2 = ttk.Label(window, text="Ejemplo con 17 caracteres: 00100100100000001")
+id_label = ttk.Label(window, text="ID:")
+id_entry = ttk.Entry(window)
+info_label = ttk.Label(window, text="")
 
 def consultar():
     #host y puerto
@@ -39,7 +47,6 @@ def consultar():
 # Crear el botón de consulta
 consulta_button = tk.Button(window, text="Consultar", command=consultar)
 
-# Colocar los widgets en la ventana
 txt_label.pack()
 txt_label2.pack()
 id_label.pack()
