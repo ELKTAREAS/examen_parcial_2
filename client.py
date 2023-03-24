@@ -22,7 +22,7 @@ info_label = ttk.Label(window, text="")
 
 def consultar():
     #host y puerto
-    HOST = socket.gethostname() # cambiar por una ip real
+    HOST = '192.168.229.136' # cambiar por una ip real
     PORT = 4444
 
     # Crear una conexión con el servidor socket
