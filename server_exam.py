@@ -15,7 +15,7 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 # host y puerto
-HOST = socket.gethostname()  # cambiar por una ip real
+HOST = '192.168.229.136' # cambiar por una ip real
 PORT = 4444
 
 # Crear un socket server en el puerto 4444
