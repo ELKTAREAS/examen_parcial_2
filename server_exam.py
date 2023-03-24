@@ -8,7 +8,7 @@ import mysql.connector
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="Sonaguera0208",
+    password="",
     database="examen_parcial_bd"
 )
 # Ejecutante de la base de datos
@@ -32,16 +32,13 @@ def handle_client(client_socket, client_address):
 
     # Recibir la solicitud del cliente
     data = client_socket.recv(1024).decode()
-    """cod_pais = data[:3]
-    cod_zona = data[3:6]
-    cod_distrito = data[6:9]"""
-    id_num = str(data[9:])
+    print(f"Solicitud recibida: {data}")
 
     # Dividir el ID en 4 secciones
     # Usaremos una lista de 4 elementos que contenga los 3 primeros caracteres del ID y el resto de caracteres del ID en el último elemento
-    # Por ejemplo, si el ID es 12345678900000001, la lista será ["001", "001", "001", "00000001"] y
-    # cada elemento será un argumento para la consulta SQL que se ejecutará más adelante en el código
+    # Por ejemplo, si el ID es 001001001 y cada elemento será un argumento para la consulta SQL que se ejecutará más adelante en el código
     id = [data[i:i + 3] for i in range(0, 9, 3)]
+    id_num = str(data[9:])
 
     # Consultar la base de datos MySQL para obtener la información del ID recibido del cliente
     cursor.execute(
@@ -59,7 +56,16 @@ def handle_client(client_socket, client_address):
             (id_num, id[0], id[1], id[2]))
         db.commit()
 
+        # Imprimir la respuesta en el servidor
         print(response)
+
+        # Imprimir la respuesta de la bitacora en el servidor
+        cursor.execute("SELECT cod_bitacora, codpais, codzona, cod_distrito, fecha FROM bitacora ORDER BY id DESC LIMIT 1")
+        bita = cursor.fetchall()
+
+        # Imprimir la respuesta de la bitacora en el servidor
+        print(f"Se ha guardado en la bitacora el ID: {bita[0][0]} del pais: 00{bita[0][1]} de la zona: 00{bita[0][2]} del distrito: 00{bita[0][3]} en la fecha: {bita[0][4]}")
+
     else:
         # Si no se encontró un resultado, enviar un mensaje de error al cliente
         error_message = "No se encontró información para el ID especificado"
