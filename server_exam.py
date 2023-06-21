@@ -37,12 +37,15 @@ def handle_client(client_socket, client_address):
     # Dividir el ID en 4 secciones
     # Usaremos una lista de 4 elementos que contenga los 3 primeros caracteres del ID y el resto de caracteres del ID en el último elemento
     # Por ejemplo, si el ID es 001001001 y cada elemento será un argumento para la consulta SQL que se ejecutará más adelante en el código
-    id = [data[i:i + 3] for i in range(0, 9, 3)]
+    #id = [data[i:i + 3] for i in range(0, 9, 3)]
+    id_pais = str(data[0:3])
+    cod_zona = str(data[3:6])
+    cod_distrito = str(data[6:9])
     id_num = str(data[9:])
 
     # Consultar la base de datos MySQL para obtener la información del ID recibido del cliente
     cursor.execute(
-        f"SELECT pais, zona, distrito FROM distrito D JOIN pais ON pais.codpais = {id[0]} JOIN zona ON zona.codzona = {id[1]} AND zona.codpais = {id[0]} WHERE D.codpais = {id[0]} AND D.codzona = {id[1]} AND D.cod_distrito = {id[2]}")
+        f"SELECT pais, zona, distrito FROM distrito D JOIN pais ON pais.codpais = {id_pais} JOIN zona ON zona.codzona = {cod_zona} AND zona.codpais = {id_pais} WHERE D.codpais = {id_pais} AND D.codzona = {cod_zona} AND D.cod_distrito = {cod_distrito}")
     result = cursor.fetchone()
 
     if result:
@@ -53,7 +56,7 @@ def handle_client(client_socket, client_address):
         # Guardar en la bitácora
         cursor.execute(
             "INSERT INTO bitacora (cod_bitacora, codpais, codzona, cod_distrito, fecha) VALUES (%s, %s, %s, %s, NOW())",
-            (id_num, id[0], id[1], id[2]))
+            (id_num, id_pais, cod_zona, cod_distrito))
         db.commit()
 
         # Imprimir la respuesta en el servidor
